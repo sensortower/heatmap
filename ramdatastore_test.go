@@ -76,7 +76,81 @@ var _ = Describe("ramDatastore", func() {
 			r.Put("prefix.baz.suffix", dp)
 
 			arr := r.Glob("prefix.*.suffix")
-			Expect(arr).To(ConsistOf([]string{"prefix.foo.suffix", "prefix.bar.suffix", "prefix.baz.suffix"}))
+			Expect(arr).To(ConsistOf([]*globResult{
+				&globResult{
+					name:   "prefix.foo.suffix",
+					isLeaf: true,
+				}, &globResult{
+					name:   "prefix.bar.suffix",
+					isLeaf: true,
+				}, &globResult{
+					name:   "prefix.baz.suffix",
+					isLeaf: true,
+				}}))
+		})
+
+		It("works with asterisk being the last element", func() {
+			r := newRAMDatastore()
+			dp := &datapoint{
+				timestamp: time.Now(),
+				duration:  0.33,
+			}
+			r.Put("prefix.foo.suffix", dp)
+			r.Put("prefix.bar.suffix", dp)
+			r.Put("prefix.baz.suffix", dp)
+
+			arr := r.Glob("prefix.*")
+			Expect(arr).To(ConsistOf([]*globResult{
+				&globResult{
+					name:        "prefix.foo",
+					hasChildren: true,
+				}, &globResult{
+					name:        "prefix.bar",
+					hasChildren: true,
+				}, &globResult{
+					name:        "prefix.baz",
+					hasChildren: true,
+				},
+			}))
+		})
+
+		It("works with asterisk being the last element", func() {
+			r := newRAMDatastore()
+			dp := &datapoint{
+				timestamp: time.Now(),
+				duration:  0.33,
+			}
+			r.Put("prefix.foo.suffix", dp)
+			r.Put("prefix.bar.suffix", dp)
+			r.Put("prefix.baz.suffix", dp)
+
+			arr := r.Glob("404.*")
+			Expect(arr).To(BeEmpty())
+		})
+
+		It("works with root asterisk case", func() {
+			r := newRAMDatastore()
+			dp := &datapoint{
+				timestamp: time.Now(),
+				duration:  0.33,
+			}
+			r.Put("foo", dp)
+			r.Put("bar", dp)
+			r.Put("baz", dp)
+
+			arr := r.Glob("*")
+			Expect(arr).To(ConsistOf([]*globResult{
+				&globResult{
+					name:   "foo",
+					isLeaf: true,
+				}, &globResult{
+					name:   "bar",
+					isLeaf: true,
+				}, &globResult{
+					name:   "baz",
+					isLeaf: true,
+				},
+			}))
 		})
 	})
 })
