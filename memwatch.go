@@ -60,14 +60,14 @@ func (m *memWatch) start() {
 		logDebug.Printf("[MEMWATCH] checking on memory usage %d/%d", used, m.memThreshold)
 		if used > m.memThreshold {
 			logDebug.Printf("[MEMWATCH] doing a GC run")
-			runtime.GC()
+			reportTime("GC run", func() { runtime.GC() })
 		}
 
 		used = memoryUsed()
 		if used > m.memThreshold {
 			logDebug.Printf("[MEMWATCH] doing a full cleanup")
-			m.ramDatastore.cleanup()
-			runtime.GC()
+			reportTime("RAM datastore cleanup", func() { m.ramDatastore.cleanup() })
+			reportTime("GC run", func() { runtime.GC() })
 		}
 	}
 }
@@ -76,4 +76,10 @@ func memoryUsed() uint64 {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
 	return m.Alloc
+}
+
+func reportTime(label string, cb func()) {
+	t := time.Now()
+	cb()
+	logDebug.Printf("[MEMWATCH] %s took %s", label, time.Now().Sub(t).String())
 }
