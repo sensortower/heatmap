@@ -104,9 +104,10 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 
 	globbedTargets := h.storage.Glob(target)
 	if len(globbedTargets) > 0 {
+		globbedName := globbedTargets[0].name
 		resultArray = append(resultArray, &renderReturn{
-			Target:     globbedTargets[0].name,
-			Datapoints: h.storage.Get(target, from, to),
+			Target:     globbedName,
+			Datapoints: h.storage.Get(globbedName, from, to),
 		})
 	}
 
