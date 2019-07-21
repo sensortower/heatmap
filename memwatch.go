@@ -71,5 +71,5 @@ func (m *memWatch) start() {
 func memoryUsed() uint64 {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	return m.Sys
+	return m.Alloc
 }
