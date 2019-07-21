@@ -61,6 +61,7 @@ func (m *memWatch) start() {
 		i := 0
 		logDebug.Printf("[MEMWATCH] checking on memory usage %d/%d", used, m.memThreshold)
 		for i < 3 && used > m.memThreshold {
+			logDebug.Printf("[MEMWATCH] doing a cleanup")
 			m.ramDatastore.cleanup()
 			runtime.GC()
 			i++
