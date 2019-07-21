@@ -53,23 +53,25 @@ func boolToInt(v bool) int {
 	return 0
 }
 
-func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
-	queryArr, ok := r.URL.Query()["query"]
-	query := ""
+func requestParam(r *http.Request, name string) (val string) {
+	arr, ok := r.URL.Query()[name]
 
 	if !ok {
 		err := r.ParseForm()
 		if err != nil {
 			return
 		}
-		query = r.Form.Get("query")
+		val = r.Form.Get(name)
 	} else {
-		query = queryArr[0]
+		val = arr[0]
 	}
+	return
+}
 
+func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 	results := []*metricsFindReturn{}
 
-	for _, globResult := range h.storage.Glob(query) {
+	for _, globResult := range h.storage.Glob(requestParam(r, "query")) {
 		results = append(results, &metricsFindReturn{
 			Text:          lastSegment(globResult.name),
 			Expandable:    boolToInt(globResult.hasChildren),
@@ -85,24 +87,12 @@ func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
-	targetArr, ok := r.URL.Query()["target"]
-	target := ""
-
-	if !ok {
-		err := r.ParseForm()
-		if err != nil {
-			return
-		}
-		target = r.Form.Get("target")
-	} else {
-		target = targetArr[0]
-	}
-
+	// TODO: use the ones from request
 	from := time.Now()
 	to := time.Now()
 	resultArray := []*renderReturn{}
 
-	globbedTargets := h.storage.Glob(target)
+	globbedTargets := h.storage.Glob(requestParam(r, "target"))
 	if len(globbedTargets) > 0 {
 		globbedName := globbedTargets[0].name
 		resultArray = append(resultArray, &renderReturn{
