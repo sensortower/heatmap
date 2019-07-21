@@ -67,8 +67,6 @@ func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 		query = queryArr[0]
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-
 	results := []*metricsFindReturn{}
 
 	for _, globResult := range h.storage.Glob(query) {
@@ -82,6 +80,7 @@ func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 	}
 
 	e := json.NewEncoder(w)
+	w.Header().Set("Content-Type", "application/json")
 	e.Encode(results)
 }
 
@@ -101,12 +100,19 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 
 	from := time.Now()
 	to := time.Now()
+	resultArray := []*renderReturn{}
 
-	w.Header().Set("Content-Type", "application/json")
+	globbedTargets := h.storage.Glob(target)
+	if len(globbedTargets) > 0 {
+		resultArray = append(resultArray, &renderReturn{
+			Target:     globbedTargets[0].name,
+			Datapoints: h.storage.Get(target, from, to),
+		})
+	}
 
 	e := json.NewEncoder(w)
-	rr := &renderReturn{Target: target, Datapoints: h.storage.Get(target, from, to)}
-	e.Encode([]*renderReturn{rr})
+	w.Header().Set("Content-Type", "application/json")
+	e.Encode(resultArray)
 }
 
 // Main is the main entrypoint
