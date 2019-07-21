@@ -14,6 +14,7 @@ type memWatch struct {
 	config       *config
 
 	memThreshold uint64 // in bytes
+	gcChan       chan struct{}
 }
 
 var multipliers = map[string]uint64{
@@ -26,7 +27,25 @@ var multipliers = map[string]uint64{
 	"pb":    1024 * 1024 * 1024 * 1024 * 1024,
 }
 
+func (m *memWatch) scheduleGCRun() {
+	logDebug.Printf("[MEMWATCH] scheduling a GC run")
+	select {
+	case m.gcChan <- struct{}{}:
+	default:
+	}
+}
+
+func (m *memWatch) gcSubroutine() {
+	for {
+		<-m.gcChan
+		reportTime("GC run", func() { runtime.GC() })
+	}
+}
+
 func (m *memWatch) start() {
+	m.gcChan = make(chan struct{}, 1)
+	go m.gcSubroutine()
+
 	t := time.NewTicker(time.Second)
 
 	if strings.Contains(m.config.memThreshold, "%") {
@@ -59,15 +78,16 @@ func (m *memWatch) start() {
 		used := memoryUsed()
 		logDebug.Printf("[MEMWATCH] checking on memory usage %d/%d", used, m.memThreshold)
 		if used > m.memThreshold {
-			logDebug.Printf("[MEMWATCH] doing a GC run")
-			reportTime("GC run", func() { runtime.GC() })
+			m.scheduleGCRun()
 		}
+
+		time.Sleep(time.Second)
 
 		used = memoryUsed()
 		if used > m.memThreshold {
 			logDebug.Printf("[MEMWATCH] doing a full cleanup")
 			reportTime("RAM datastore cleanup", func() { m.ramDatastore.cleanup() })
-			reportTime("GC run", func() { runtime.GC() })
+			m.scheduleGCRun()
 		}
 	}
 }
