@@ -12,7 +12,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with simple cases", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("test", dp)
@@ -25,7 +25,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with slightly more complicated cases", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("foo.bar.baz", dp)
@@ -40,7 +40,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with simple cases", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("test", dp)
@@ -53,7 +53,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with slightly more complicated cases", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("foo.bar.baz", dp)
@@ -68,7 +68,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with simple cases", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
@@ -92,7 +92,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with asterisk being the last element", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
@@ -117,7 +117,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with brackets", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
@@ -139,7 +139,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with a nonexisting root element", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
@@ -153,7 +153,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with a nonexisting child element", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
@@ -167,7 +167,7 @@ var _ = Describe("ramDatastore", func() {
 		It("works with root asterisk case", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
-				timestamp: time.Now(),
+				timestamp: uint32(time.Now().Unix()),
 				duration:  0.33,
 			}
 			r.Put("foo", dp)

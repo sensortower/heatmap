@@ -15,9 +15,9 @@ func (dd *dummyData) start() {
 	t := time.NewTicker(time.Second)
 	for {
 		<-t.C
-		ts := time.Now()
+		ts := uint32(time.Now().Unix())
 		for i := 0; i < rand.Intn(100); i++ {
-			dd.storage.Put("dummy-data", &datapoint{timestamp: ts, duration: math.Abs(rand.NormFloat64() * 1000)})
+			dd.storage.Put("dummy-data", &datapoint{timestamp: ts, duration: float32(math.Abs(rand.NormFloat64() * 1000))})
 		}
 	}
 }
