@@ -114,7 +114,7 @@ var _ = Describe("ramDatastore", func() {
 			}))
 		})
 
-		It("works with asterisk being the last element", func() {
+		It("works with a nonexisting root element", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: time.Now(),
@@ -125,6 +125,20 @@ var _ = Describe("ramDatastore", func() {
 			r.Put("prefix.baz.suffix", dp)
 
 			arr := r.Glob("404.*")
+			Expect(arr).To(BeEmpty())
+		})
+
+		It("works with a nonexisting children element", func() {
+			r := newRAMDatastore()
+			dp := &datapoint{
+				timestamp: time.Now(),
+				duration:  0.33,
+			}
+			r.Put("prefix.foo.suffix", dp)
+			r.Put("prefix.bar.suffix", dp)
+			r.Put("prefix.baz.suffix", dp)
+
+			arr := r.Glob("prefix.404")
 			Expect(arr).To(BeEmpty())
 		})
 

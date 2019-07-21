@@ -32,6 +32,9 @@ func (tn *treeNode) glob(res *[]*globResult, prefix string, fragments []string) 
 		prefix += f
 		tn = tn.children[f]
 	}
+	if tn == nil {
+		return
+	}
 	*res = append(*res, &globResult{
 		name:        prefix,
 		isLeaf:      len(tn.data) > 0,
