@@ -5,6 +5,8 @@ func Main() {
 	config := &config{}
 	config.populateFromFlags()
 
+	changeLogLevel(config.logLevel)
+
 	storage := newRAMDatastore()
 
 	l := &statsdUDPListener{storage, config}

@@ -2,7 +2,6 @@ package heatmap
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -113,5 +112,5 @@ func (h *httpServer) start() {
 	http.HandleFunc("/functions", h.functions)
 	http.HandleFunc("/version", h.version)
 	http.HandleFunc("/render", h.renderer)
-	log.Fatal(http.ListenAndServe(h.config.httpAddr, nil))
+	logError.Fatalln(http.ListenAndServe(h.config.httpAddr, nil))
 }

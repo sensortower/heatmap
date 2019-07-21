@@ -3,7 +3,6 @@ package heatmap
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net"
 	"strconv"
 	"time"
@@ -84,7 +83,7 @@ func (sl *statsdUDPListener) start() error {
 			}
 			m, err := parseAndFilter(slice)
 			if err != nil {
-				log.Println("error parsing metric:", err)
+				logError.Println("[STATSD] failed to parse message:", err)
 			} else if m != nil {
 				sl.storage.Put(m.key, m.datapoint)
 			}
