@@ -1,6 +1,7 @@
 package heatmap
 
 import (
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -15,32 +16,54 @@ type treeNode struct {
 	data []*datapoint
 }
 
-func (tn *treeNode) glob(res *[]*globResult, prefix string, fragments []string) {
-	for i, f := range fragments {
-		if prefix != "" {
-			prefix += "."
+func globPatternToRegexp(pattern string) *regexp.Regexp {
+	expr := "^"
+
+	var multipleChoice bool
+
+	for _, ch := range pattern {
+		if ch == '*' {
+			expr += ".+?"
+		} else if ch == '{' {
+			expr += "("
+			multipleChoice = true
+		} else if ch == '}' {
+			multipleChoice = false
+			expr += ")"
+		} else if multipleChoice && ch == ',' {
+			expr += "|"
+		} else {
+			expr += string(ch)
 		}
+	}
+
+	expr += "$"
+	return regexp.MustCompile(expr)
+}
+
+func (tn *treeNode) glob(res *[]*globResult, prefix string, fragments []string) {
+	if len(fragments) == 0 {
 		if tn == nil {
 			return
 		}
-		if f == "*" {
-			for k, child := range tn.children {
-				child.glob(res, prefix+k, fragments[i+1:])
-			}
-			return
-		}
-		prefix += f
-		tn = tn.children[f]
-	}
-	if tn == nil {
+		*res = append(*res, &globResult{
+			name:        prefix,
+			isLeaf:      len(tn.data) > 0,
+			hasChildren: len(tn.children) > 0,
+		})
 		return
 	}
-	*res = append(*res, &globResult{
-		name:        prefix,
-		isLeaf:      len(tn.data) > 0,
-		hasChildren: len(tn.children) > 0,
-	})
-	return
+
+	if prefix != "" {
+		prefix += "."
+	}
+
+	r := globPatternToRegexp(fragments[0])
+	for k, child := range tn.children {
+		if r.MatchString(k) {
+			child.glob(res, prefix+k, fragments[1:])
+		}
+	}
 }
 
 type ramDatastore struct {

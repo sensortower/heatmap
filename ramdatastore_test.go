@@ -114,6 +114,28 @@ var _ = Describe("ramDatastore", func() {
 			}))
 		})
 
+		It("works with brackets", func() {
+			r := newRAMDatastore()
+			dp := &datapoint{
+				timestamp: time.Now(),
+				duration:  0.33,
+			}
+			r.Put("prefix.foo.suffix", dp)
+			r.Put("prefix.bar.suffix", dp)
+			r.Put("prefix.baz.suffix", dp)
+
+			arr := r.Glob("prefix.{foo,bar}")
+			Expect(arr).To(ConsistOf([]*globResult{
+				&globResult{
+					name:        "prefix.foo",
+					hasChildren: true,
+				}, &globResult{
+					name:        "prefix.bar",
+					hasChildren: true,
+				},
+			}))
+		})
+
 		It("works with a nonexisting root element", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
@@ -128,7 +150,7 @@ var _ = Describe("ramDatastore", func() {
 			Expect(arr).To(BeEmpty())
 		})
 
-		It("works with a nonexisting children element", func() {
+		It("works with a nonexisting child element", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: time.Now(),
