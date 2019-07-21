@@ -11,8 +11,10 @@ func Main() {
 
 	l := &statsdUDPListener{storage, config}
 	s := &httpServer{storage, config}
+	m := &memWatch{ramDatastore: storage, config: config}
 	go l.start()
 	go s.start()
+	go m.start()
 
 	if config.createDummyData {
 		d := &dummyData{storage, config}

@@ -41,6 +41,13 @@ func globPatternToRegexp(pattern string) *regexp.Regexp {
 	return regexp.MustCompile(expr)
 }
 
+func (tn *treeNode) recursiveCleanup() {
+	tn.data = tn.data[len(tn.data)/10:]
+	for _, child := range tn.children {
+		child.recursiveCleanup()
+	}
+}
+
 func (tn *treeNode) glob(res *[]*globResult, prefix string, fragments []string) {
 	if len(fragments) == 0 {
 		if tn == nil {
@@ -116,4 +123,8 @@ func (rd *ramDatastore) Glob(key string) (res []*globResult) {
 	fragments := strings.Split(key, ".")
 	rd.root.glob(&res, "", fragments)
 	return
+}
+
+func (rd *ramDatastore) cleanup() {
+	rd.root.recursiveCleanup()
 }
