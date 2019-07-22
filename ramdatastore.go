@@ -23,7 +23,7 @@ func globPatternToRegexp(pattern string) *regexp.Regexp {
 
 	for _, ch := range pattern {
 		if ch == '*' {
-			expr += ".+?"
+			expr += ".*?"
 		} else if ch == '{' {
 			expr += "("
 			multipleChoice = true
