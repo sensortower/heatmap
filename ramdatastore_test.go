@@ -13,7 +13,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("test", dp)
 
@@ -26,7 +26,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("foo.bar.baz", dp)
 
@@ -41,7 +41,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("test", dp)
 
@@ -54,7 +54,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("foo.bar.baz", dp)
 
@@ -69,7 +69,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
 			r.Put("prefix.bar.suffix", dp)
@@ -93,7 +93,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
 			r.Put("prefix.bar.suffix", dp)
@@ -118,7 +118,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
 			r.Put("prefix.bar.suffix", dp)
@@ -140,7 +140,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
 			r.Put("prefix.bar.suffix", dp)
@@ -154,7 +154,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("prefix.foo.suffix", dp)
 			r.Put("prefix.bar.suffix", dp)
@@ -168,7 +168,7 @@ var _ = Describe("ramDatastore", func() {
 			r := newRAMDatastore()
 			dp := &datapoint{
 				timestamp: uint32(time.Now().Unix()),
-				duration:  0.33,
+				value:     0.33,
 			}
 			r.Put("foo", dp)
 			r.Put("bar", dp)

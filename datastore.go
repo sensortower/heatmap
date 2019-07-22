@@ -7,11 +7,11 @@ import (
 
 type datapoint struct {
 	timestamp uint32
-	duration  float32
+	value     float32
 }
 
 func (dp *datapoint) MarshalJSON() ([]byte, error) {
-	return json.Marshal([]interface{}{dp.duration, dp.timestamp})
+	return json.Marshal([]interface{}{dp.value, dp.timestamp})
 }
 
 type globResult struct {

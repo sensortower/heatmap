@@ -48,29 +48,29 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 
 		if inBuckets {
 			bucketCount := 10
-			minVal := float32(0.0)
-			maxVal := float32(1.0)
+			minYVal := float32(0.0)
+			maxYVal := float32(1.0)
 			for _, d := range allData {
-				if d.duration > maxVal {
-					maxVal = d.duration
+				if d.value > maxYVal {
+					maxYVal = d.value
 				}
 			}
 
 			bucketXSize := uint32(to.Sub(from)/time.Second) / uint32(maxDataPoints)
 			bucketXSize = minMax(bucketXSize, minXBucketSize, maxXBucketSize)
-			bucketYSize := (maxVal - minVal) / float32(bucketCount-1)
+			bucketYSize := (maxYVal - minYVal) / float32(bucketCount-1)
 
 			bucketsMap := make([]map[uint32]*datapoint, bucketCount)
 			for i := range bucketsMap {
 				bucketsMap[i] = make(map[uint32]*datapoint)
 			}
 			for _, d := range allData {
-				bucketIndex := int(d.duration / bucketYSize)
+				bucketIndex := int(d.value / bucketYSize)
 				key := d.timestamp / bucketXSize * bucketXSize
 				if v, ok := bucketsMap[bucketIndex][key]; ok {
-					v.duration += 1.0
+					v.value += 1.0
 				} else {
-					bucketsMap[bucketIndex][key] = &datapoint{timestamp: key, duration: 1.0}
+					bucketsMap[bucketIndex][key] = &datapoint{timestamp: key, value: 1.0}
 				}
 			}
 			for i, b := range bucketsMap {

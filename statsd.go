@@ -43,7 +43,7 @@ func parseAndFilter(msg []byte) (*message, error) {
 		return nil, fmt.Errorf("message is invalid: %q", msg)
 	}
 
-	dur, err := strconv.ParseFloat(string(msg[i2+1:i]), 32)
+	val, err := strconv.ParseFloat(string(msg[i2+1:i]), 32)
 
 	if err != nil {
 		return nil, fmt.Errorf("message is invalid: %q", msg)
@@ -51,7 +51,7 @@ func parseAndFilter(msg []byte) (*message, error) {
 
 	d := &datapoint{
 		timestamp: uint32(time.Now().Unix()),
-		duration:  float32(dur),
+		value:     float32(val),
 	}
 
 	m := &message{
