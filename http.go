@@ -3,6 +3,7 @@ package heatmap
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 )
@@ -67,6 +68,20 @@ func requestParam(r *http.Request, name string) (val string) {
 	return
 }
 
+type sortableMetricsFindReturn []*metricsFindReturn
+
+func (m sortableMetricsFindReturn) Len() int {
+	return len(m)
+}
+
+func (m sortableMetricsFindReturn) Less(i, j int) bool {
+	return strings.Compare(m[i].Text, m[j].Text) < 0
+}
+
+func (m sortableMetricsFindReturn) Swap(i, j int) {
+	m[i], m[j] = m[j], m[i]
+}
+
 func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 	results := []*metricsFindReturn{}
 
@@ -79,6 +94,8 @@ func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 			AllowChildren: boolToInt(globResult.hasChildren),
 		})
 	}
+
+	sort.Sort(sortableMetricsFindReturn(results))
 
 	e := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json")
