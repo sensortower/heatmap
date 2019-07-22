@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"sort"
 	"strings"
-	"time"
 )
 
 type httpServer struct {
@@ -35,7 +34,22 @@ func (h *httpServer) version(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *httpServer) functions(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("{}"))
+	w.Write([]byte(`{
+		"inBuckets": {
+			"name": "inBuckets",
+			"function": "inBuckets(seriesList)",
+			"description": "Puts metrics in buckets",
+			"module": "graphite.render.functions",
+			"group": "Buckets",
+			"params": [
+				{
+					"name": "seriesList",
+					"type": "seriesList",
+					"required": true
+				}
+			]
+		}
+	}`))
 }
 
 func lastSegment(key string) string {
@@ -100,26 +114,6 @@ func (h *httpServer) metricsFind(w http.ResponseWriter, r *http.Request) {
 	e := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json")
 	e.Encode(results)
-}
-
-func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
-	// TODO: use the ones from request
-	from := time.Now()
-	to := time.Now()
-	resultArray := []*renderReturn{}
-
-	globbedTargets := h.storage.Glob(requestParam(r, "target"))
-	if len(globbedTargets) > 0 {
-		globbedName := globbedTargets[0].name
-		resultArray = append(resultArray, &renderReturn{
-			Target:     globbedName,
-			Datapoints: h.storage.Get(globbedName, from, to),
-		})
-	}
-
-	e := json.NewEncoder(w)
-	w.Header().Set("Content-Type", "application/json")
-	e.Encode(resultArray)
 }
 
 // Main is the main entrypoint

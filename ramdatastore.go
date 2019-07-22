@@ -113,8 +113,13 @@ func (rd *ramDatastore) Get(key string, from, to time.Time) (res []*datapoint) {
 		}
 	}
 
-	// TODO: add time limiting
-	res = append(res, tn.data...)
+	fromInt := uint32(from.Unix())
+	toInt := uint32(to.Unix())
+	for _, d := range tn.data {
+		if d.timestamp >= fromInt && d.timestamp <= toInt {
+			res = append(res, d)
+		}
+	}
 
 	return
 }
