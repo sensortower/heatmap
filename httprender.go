@@ -93,7 +93,7 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 			}
 
 			if logScale {
-				maxYVal = float32(math.Log10(float64(maxYVal)))
+				maxYVal = float32(math.Log(float64(maxYVal)))
 			}
 
 			bucketXSize := uint32(to.Sub(from)/time.Second) / uint32(maxDataPoints)
@@ -107,7 +107,7 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 			for _, d := range allData {
 				dv := d.value
 				if logScale {
-					dv = float32(math.Log10(float64(dv)))
+					dv = float32(math.Log(float64(dv)))
 				}
 				bucketIndex := int(dv / bucketYSize)
 				if bucketIndex < bucketCount {
@@ -127,7 +127,7 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 				}
 				bucketLowerBoundary := float32(i) * bucketYSize
 				if logScale {
-					bucketLowerBoundary = float32(math.Pow(float64(bucketLowerBoundary), 10.0))
+					bucketLowerBoundary = float32(math.Exp(float64(bucketLowerBoundary)))
 				}
 				resultArray = append(resultArray, &renderReturn{
 					Target:     fmt.Sprintf("%f", bucketLowerBoundary),
