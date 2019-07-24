@@ -46,6 +46,9 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 	target = strings.Replace(target, "inBuckets", "", 1)
 	target = strings.Trim(target, "()")
 	targetArgs := strings.Split(target, ",")
+	for i, t := range targetArgs {
+		targetArgs[i] = strings.Trim(strings.TrimSpace(t), "\"'")
+	}
 	target = targetArgs[0]
 
 	bucketCount := 10
