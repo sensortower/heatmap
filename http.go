@@ -46,6 +46,21 @@ func (h *httpServer) functions(w http.ResponseWriter, r *http.Request) {
 					"name": "seriesList",
 					"type": "seriesList",
 					"required": true
+				},
+				{
+					"name": "bucketCount",
+					"type": "string",
+					"required": false
+				},
+				{
+					"name": "yLimit",
+					"type": "string",
+					"required": false
+				},
+				{
+					"name": "logScale",
+					"type": "string",
+					"required": false
 				}
 			]
 		}
