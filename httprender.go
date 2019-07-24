@@ -127,7 +127,7 @@ func (h *httpServer) renderer(w http.ResponseWriter, r *http.Request) {
 				}
 				bucketLowerBoundary := float32(i) * bucketYSize
 				if logScale {
-					math.Pow(float64(bucketLowerBoundary), 10.0)
+					bucketLowerBoundary = float32(math.Pow(float64(bucketLowerBoundary), 10.0))
 				}
 				resultArray = append(resultArray, &renderReturn{
 					Target:     fmt.Sprintf("%f", bucketLowerBoundary),
